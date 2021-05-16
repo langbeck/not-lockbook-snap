@@ -1,6 +1,5 @@
 name: not-lb
 grade: stable
-adopt-info: lockbook
 version: 0.0.1
 summary: The best place to store and share thoughts
 description: |
@@ -20,8 +19,8 @@ confinement: strict
 apps:
   lockbook:
     command: bin/lockbook
-    extensions:
-      - gnome-3-38
+    extensions: [gnome-3-38]
+    plugs: [network]
 
 parts:
   lockbook:
