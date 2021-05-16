@@ -17,15 +17,28 @@ base: core20
 confinement: strict
 
 apps:
-  lockbook:
-    command: bin/lockbook
+  not-lb-gui:
+    command: bin/lockbook-gui
     extensions: [gnome-3-38]
     plugs: [network]
 
+  not-lb:
+    command: bin/lockbook
+    plugs: [network]
+
 parts:
-  lockbook:
+  lockbook-gui:
     plugin: rust
-    source: https://github.com/lockbook/lockbook.git
+    source: .
     source-subdir: clients/linux
+    build-packages:
+      - libgtksourceview-3.0-dev
+    organize: 
+      bin/lockbook: bin/lockbook-gui
+
+  not-lb:
+    plugin: rust
+    source: .
+    source-subdir: clients/cli
     build-packages:
       - libgtksourceview-3.0-dev
