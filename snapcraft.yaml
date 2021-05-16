@@ -17,28 +17,29 @@ base: core20
 confinement: strict
 
 apps:
-  not-lb-gui:
-    command: bin/lockbook-gui
-    extensions: [gnome-3-38]
-    plugs: [network]
-
   not-lb:
     command: bin/lockbook
     plugs: [network]
 
-parts:
-  lockbook-gui:
-    plugin: rust
-    source: .
-    source-subdir: clients/linux
-    build-packages:
-      - libgtksourceview-3.0-dev
-    organize: 
-      bin/lockbook: bin/lockbook-gui
+  gui:
+    command: bin/lockbook-gui
+    extensions: [gnome-3-38]
+    plugs: [network]
 
-  not-lb:
+
+parts:
+  build-all:
     plugin: rust
-    source: .
+    source: https://github.com/lockbook/lockbook.git
     source-subdir: clients/cli
     build-packages:
       - libgtksourceview-3.0-dev
+
+    stage-packages:
+      - libgtksourceview-3.0-1
+    
+    override-build: |
+      cargo install --force --locked --path clients/linux --root "${SNAPCRAFT_PART_INSTALL}"
+      mv "${SNAPCRAFT_PART_INSTALL}/bin/lockbook" "${SNAPCRAFT_PART_INSTALL}/bin/lockbook-gui"
+
+      cargo install --force --locked --path clients/cli --root "${SNAPCRAFT_PART_INSTALL}"
