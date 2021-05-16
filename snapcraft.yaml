@@ -1,0 +1,40 @@
+name: not-lb
+grade: stable
+adopt-info: lockbook
+summary: The best place to store and share thoughts
+description: |
+  Privacy shouldn't be a compromise. That's why we made Lockbook, a companion
+  for recording thoughts on all your devices. Record, sync, and share your
+  notes with apps engineered to feel like home on every platform. We collect no
+  personal information and encrypt your notes so even we can't see them. Don't
+  take our word for it: Lockbook is 100% open-source.
+
+base: core18
+confinement: strict
+
+apps:
+  lockbook:
+    common-id: com.github.lockbook.Lockbook
+    command: bin/lockbook
+    extensions:
+      - gnome-3-28
+    slots:
+      - dbus-daemon
+
+parts:
+  lockbook:
+    plugin: rust
+    source: https://github.com/lockbook/lockbook.git
+    source-subdir: clients/linux
+    build-packages:
+      - libgtksourceview-3.0-dev
+
+    override-build: |
+      snapcraftctl build 
+      snapcraftctl set-version $(git describe --abbrev=0 --tags)
+
+slots:
+  dbus-daemon:
+    name: com.github.lockbook.Lockbook
+    interface: dbus
+    bus: session
