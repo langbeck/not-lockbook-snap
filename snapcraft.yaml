@@ -32,8 +32,14 @@ parts:
     plugin: nil
     source: https://github.com/lockbook/lockbook.git
     source-subdir: clients/cli
+    build-environment:
+      - PATH: "${HOME}/.cargo/bin:${PATH}"
+
     build-packages:
       - libgtksourceview-3.0-dev
+      - curl
+      - gcc
+      - git
 
     stage-packages:
       - libgtksourceview-3.0-1
