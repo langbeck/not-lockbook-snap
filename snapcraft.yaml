@@ -1,4 +1,4 @@
-name: not-lb
+name: lb
 grade: stable
 adopt-info: lockbook
 summary: The best place to store and share thoughts
@@ -8,6 +8,10 @@ description: |
   notes with apps engineered to feel like home on every platform. We collect no
   personal information and encrypt your notes so even we can't see them. Don't
   take our word for it: Lockbook is 100% open-source.
+
+architectures:
+  - build-on: [i386, amd64]
+    run-on: [i386, amd64]
 
 base: core18
 confinement: strict
