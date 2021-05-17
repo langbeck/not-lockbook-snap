@@ -23,11 +23,26 @@ apps:
 
   gui:
     command: bin/lockbook-gui
+    desktop: usr/share/applications/lockbook.desktop
     extensions: [gnome-3-38]
     plugs: [network]
 
 
 parts:
+  build-desktop:
+    plugin: nil
+    override-build: |
+      cat <<EOF
+      [Desktop Entry]
+      Name=Lockbook
+      Type=Application
+      Exec=not-lb.gui
+      Icon=\${SNAP}/usr/share/icons/hicolor/scalable/apps/lockbook.svg
+      Terminal=false
+      EOF
+
+
+
   build-all:
     plugin: nil
     source: https://github.com/lockbook/lockbook.git
@@ -45,12 +60,30 @@ parts:
       - libgtksourceview-3.0-1
 
     override-build: |
+      # Ensure Rust toolchain is available
       if ! command -v rustup 2> /dev/null; then
           curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --no-modify-path --profile=minimal
           export PATH="${HOME}/.cargo/bin:${PATH}"
       fi
 
+      # Install GUI
       cargo install --force --locked --path clients/linux --root "${SNAPCRAFT_PART_INSTALL}"
       mv "${SNAPCRAFT_PART_INSTALL}/bin/lockbook" "${SNAPCRAFT_PART_INSTALL}/bin/lockbook-gui"
 
+      # Install CLI
       cargo install --force --locked --path clients/cli --root "${SNAPCRAFT_PART_INSTALL}"
+
+      # Install icon
+      mkdir -p "${SNAPCRAFT_PART_INSTALL}/usr/share/icons/hicolor/scalable/apps"
+      cp "graphics/SVGs/light-1.svg" "${SNAPCRAFT_PART_INSTALL}/usr/share/icons/hicolor/scalable/apps/lockbook.svg"
+
+      # Install desktop file
+      mkdir -p "${SNAPCRAFT_PART_INSTALL}/usr/share/applications"
+      cat <<EOF > "${SNAPCRAFT_PART_INSTALL}/usr/share/applications/lockbook.desktop"
+      [Desktop Entry]
+      Name=Lockbook
+      Type=Application
+      Exec=not-lb.gui
+      Icon=\${SNAP}/usr/share/icons/hicolor/scalable/apps/lockbook.svg
+      Terminal=false
+      EOF
