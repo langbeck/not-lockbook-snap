@@ -29,24 +29,9 @@ apps:
 
 
 parts:
-  build-desktop:
-    plugin: nil
-    override-build: |
-      cat <<EOF
-      [Desktop Entry]
-      Name=Lockbook
-      Type=Application
-      Exec=not-lb.gui
-      Icon=\${SNAP}/usr/share/icons/hicolor/scalable/apps/lockbook.svg
-      Terminal=false
-      EOF
-
-
-
   build-all:
     plugin: nil
     source: https://github.com/lockbook/lockbook.git
-    source-subdir: clients/cli
     build-environment:
       - PATH: "${HOME}/.cargo/bin:${PATH}"
 
